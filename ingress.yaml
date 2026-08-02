@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-demo
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: miweb.casa
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web-demo
+            port:
+              number: 80
