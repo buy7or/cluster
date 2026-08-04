@@ -5,7 +5,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-  - host: miweb.casa
+  - host: miweb.home
     http:
       paths:
       - path: /
@@ -13,5 +13,15 @@ spec:
         backend:
           service:
             name: web-demo
+            port:
+              number: 80
+  - host: dashboard.home
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: dashboard-svc
             port:
               number: 80
