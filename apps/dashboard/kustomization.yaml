@@ -4,8 +4,11 @@ kind: Kustomization
 configMapGenerator:
   - name: dashboard-html
     files:
-      - index.html
+      - web/index.html
+      - web/styles.css
+      - web/app.js
 
 resources:
   - deployment.yaml
   - service.yaml
+  - ingress.yaml

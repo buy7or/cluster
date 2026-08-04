@@ -4,4 +4,3 @@ kind: Kustomization
 resources:
   - web-demo
   - dashboard
-  - ingress.yaml

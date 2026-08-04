@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: web-demo
+  name: web-demo-ingress
 spec:
   ingressClassName: traefik
   rules:
@@ -12,16 +12,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: web-demo
-            port:
-              number: 80
-  - host: dashboard.home
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: dashboard-svc
+            name: web-demo-svc
             port:
               number: 80

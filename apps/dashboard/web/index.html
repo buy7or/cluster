@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>Homelab Dashboard</title>
+
+  <link rel="stylesheet" href="/styles.css">
+
+  <!-- Iconos -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script src="/app.js" defer></script>
+</head>
+
+<body>
+  <main class="container">
+    <header>
+      <div class="heading">
+        <div class="eyebrow">
+          <span class="status-dot"></span>
+          Cluster disponible
+        </div>
+
+        <h1>Homelab Dashboard</h1>
+
+        <p>
+          Acceso rápido a las aplicaciones y herramientas desplegadas
+          en mi cluster.
+        </p>
+      </div>
+
+      <button
+        id="theme-toggle"
+        class="theme-toggle"
+        type="button"
+        aria-label="Cambiar tema"
+      >
+        <i id="theme-icon" data-lucide="sun"></i>
+        <span id="theme-label">Modo claro</span>
+      </button>
+    </header>
+
+    <section>
+      <div class="section-header">
+        <h2>Servicios</h2>
+        <span id="service-count"></span>
+      </div>
+
+      <!-- Las tarjetas se generan desde app.js -->
+      <div id="services-grid" class="grid"></div>
+    </section>
+
+    <footer>
+      <span>k3s · Traefik · MetalLB · Pi-hole</span>
+      <span>192.168.1.0/24</span>
+    </footer>
+  </main>
+</body>
+</html>
