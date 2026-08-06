@@ -1,26 +1,3 @@
-// ---------- layout global ----------
-function layoutNodes(){
-  const gaps=10;
-  const totalW = nodeGroups.reduce((a,g)=>a+g.userData.plot,0) + gaps*(nodeGroups.length-1);
-  let x=-totalW/2;
-  nodeGroups.forEach(g=>{
-    const w=g.userData.plot; g.position.x=x+w/2; x+=w+gaps;
-  });
-  updateGround();
-}
-
-function rebuildWorld(){
-  nodeGroups.forEach(g=>scene.remove(g));
-  scene.children.filter(c=>c.isSprite).forEach(s=>scene.remove(s));
-  nodeGroups.length=0;
-  nodeData.forEach(node=>{
-    const g=buildNode(node); scene.add(g); nodeGroups.push(g);
-  });
-  layoutNodes();
-  renderLegend();
-  const sc=document.getElementById('scroll'); if(sc) sc.classList.remove('show');
-}
-
 // marcador del nodo: piedra tallada estilo heraldico con estandarte colgante
 function makeNodeBanner(node){
   const grp=new THREE.Group();
@@ -69,17 +46,3 @@ function makeNodeBanner(node){
 
   return grp;
 }
-function roundRect(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
-
-// leyenda de namespaces (solo los presentes)
-function renderLegend(){
-  const present = new Set(); nodeData.forEach(n=>n.pods.forEach(p=>present.add(p.ns)));
-  const el=document.getElementById('legend');
-  el.innerHTML='<div class="t">Namespaces</div>';
-  NS_LIST.filter(ns=>present.has(ns)).forEach(ns=>{
-    const hex='#'+NAMESPACES[ns].toString(16).padStart(6,'0');
-    const row=document.createElement('div'); row.innerHTML=`<i style="background:${hex}"></i> ${ns}`; el.appendChild(row);
-  });
-}
-
-rebuildWorld();
