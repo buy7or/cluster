@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El Poblado del Clúster · 3D</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app"></div>
+<div class="hud">
+  <h1>El Poblado del Clúster</h1>
+  <p>Cada parcela amurallada es un nodo. Dentro, las casitas (pods) se agrupan por namespace, separadas por murete y con su propio estandarte.</p>
+</div>
+<div class="hint">Arrastra para girar · rueda para acercar · flechas o WASD para desplazarte · doble clic para enfocar</div>
+<div class="chronicle" id="chronicle"></div>
+
+<div class="legend" id="legend"><div class="t">Namespaces</div></div>
+
+<div id="scroll">
+  <div class="scroll-body">
+    <button class="scroll-close" id="scrollClose">✕</button>
+    <div class="scroll-kind" id="scrollKind"></div>
+    <div class="scroll-title" id="scrollTitle"></div>
+    <div id="scrollRows"></div>
+  </div>
+</div>
+
+<div class="controls">
+  <button id="toggleNames" class="alt">Nombres: auto</button>
+  <button id="addPod">+ Añadir pod</button>
+  <button id="addToNode0" class="alt">+ Pod a node-01</button>
+  <button id="removePod" class="alt2">− Quitar pod</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="cluster-data.js"></script>
+<script src="scene.js"></script>
+<script src="builders.js"></script>
+<script src="world.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
