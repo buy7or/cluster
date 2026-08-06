@@ -31,6 +31,16 @@ const services = [
     icon: "route",
     color: "#8b5cf6",
     glow: "rgba(139, 92, 246, 0.16)"
+  },
+  {
+    name: "Grafana",
+    description: "Visualización de métricas y dashboards del cluster.",
+    url: "http://grafana.home",
+    displayUrl: "grafana.home",
+    tag: "Monitoring",
+    icon: "chart-spline",
+    color: "#f46800",
+    glow: "rgba(244, 104, 0, 0.18)"
   }
 ];
 
