@@ -2,18 +2,30 @@
 const boxGeo = new THREE.BoxGeometry(1,1,1);
 boxGeo.userData.shared = true;
 const instanceTransform = new THREE.Object3D();
+const instanceColor = new THREE.Color();
 
-function makeBoxInstances(material, items){
-  const mesh = new THREE.InstancedMesh(boxGeo, material, items.length);
+function makeInstances(geometry, material, items){
+  const mesh = new THREE.InstancedMesh(geometry, material, items.length);
+  const hasColors = items.some(item=>item.color!==undefined);
+  const hasPicks = items.some(item=>item.pick!==undefined);
   items.forEach((item, index)=>{
     instanceTransform.position.set(item.x, item.y, item.z);
     instanceTransform.scale.set(item.sx, item.sy, item.sz);
-    instanceTransform.rotation.set(0, 0, 0);
+    instanceTransform.rotation.set(item.rx||0, item.ry||0, item.rz||0);
     instanceTransform.updateMatrix();
     mesh.setMatrixAt(index, instanceTransform.matrix);
+    if(hasColors) mesh.setColorAt(index, instanceColor.set(item.color??0xffffff));
   });
   mesh.instanceMatrix.setUsage(THREE.StaticDrawUsage);
+  if(mesh.instanceColor) mesh.instanceColor.needsUpdate=true;
+  if(hasPicks) mesh.userData.instancePicks=items.map(item=>item.pick||null);
+  // En Three r128 el volumen de culling no incluye siempre todas las instancias.
+  mesh.frustumCulled=false;
   return mesh;
+}
+
+function makeBoxInstances(material, items){
+  return makeInstances(boxGeo, material, items);
 }
 
 const materialCache = new Map();

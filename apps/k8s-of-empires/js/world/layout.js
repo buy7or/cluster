@@ -32,6 +32,7 @@ function rebuildWorld(){
   });
   layoutNodes();
   refreshPickables();
+  renderer.shadowMap.needsUpdate=true;
   renderLegend();
   const sc=document.getElementById('scroll'); if(sc) sc.classList.remove('show');
 }
@@ -40,7 +41,7 @@ function refreshPickables(){
   pickableObjects = [];
   nodeGroups.forEach(g=>{
     g.traverse(o=>{
-      if(o.userData && o.userData.pick) pickableObjects.push(o);
+      if(o.userData && (o.userData.pick || o.userData.instancePicks)) pickableObjects.push(o);
     });
   });
 }

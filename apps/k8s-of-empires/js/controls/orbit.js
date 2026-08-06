@@ -60,14 +60,11 @@ addEventListener('keydown', e=>{
 addEventListener('keyup', e=>{ if(PAN_KEYS.includes(e.key)) keys[e.key.toLowerCase()]=false; });
 addEventListener('blur', ()=>{
   Object.keys(keys).forEach(key=>{ keys[key]=false; });
-  panVel.set(0,0,0);
 });
 
-const panVel = new THREE.Vector3();  // velocidad actual (con inercia)
 const panForward = new THREE.Vector3();
 const panRight = new THREE.Vector3();
 const panDirection = new THREE.Vector3();
-const panTargetVelocity = new THREE.Vector3();
 function updatePan(dt){
   const up = keys['arrowup']||keys['w'];
   const down = keys['arrowdown']||keys['s'];
@@ -86,13 +83,8 @@ function updatePan(dt){
   if(left) panDirection.sub(panRight);
 
   const maxSpeed = camDist * 0.3;            // unidades/segundo, escalada al zoom
-  const isMoving = panDirection.lengthSq() > 0;
-  panTargetVelocity.set(0, 0, 0);
-  if(isMoving) panTargetVelocity.copy(panDirection).normalize().multiplyScalar(maxSpeed);
-
-  // respuesta rapida al pulsar y frenado corto al soltar
-  const response = isMoving ? 24 : 18;
-  const ease = 1-Math.exp(-response*dt);
-  panVel.lerp(panTargetVelocity, ease);
-  if(panVel.lengthSq() > 1e-6) camTarget.addScaledVector(panVel, dt);
+  if(panDirection.lengthSq()>0){
+    panDirection.normalize();
+    camTarget.addScaledVector(panDirection,maxSpeed*dt);
+  }
 }

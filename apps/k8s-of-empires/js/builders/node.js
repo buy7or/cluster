@@ -77,6 +77,7 @@ function buildNode(node){
   g.add(banner);
 
   // ---- bloques de namespace ----
+  const housePlacements=[];
   const gridStart = -(gridSide/2) + maxSide/2;
   blocks.forEach((b, bi)=>{
     const bx = bi % gcols;
@@ -115,13 +116,17 @@ function buildNode(node){
     const cols=b.cols, innerStart=-(cols-1)*CELL/2;
     b.pods.forEach((pod,i)=>{
       const cx=i%cols, cz=Math.floor(i/cols);
-      const house=buildHouse(pod);
-      house.position.set(centerX + innerStart + cx*CELL + (rng()-0.5)*0.3, 0.12,
-                         centerZ + innerStart + cz*CELL + (rng()-0.5)*0.3);
-      house.rotation.y=(rng()-0.5)*0.4;
-      g.add(house);
+      housePlacements.push({
+        pod,
+        x:centerX+innerStart+cx*CELL+(rng()-0.5)*0.3,
+        y:0.12,
+        z:centerZ+innerStart+cz*CELL+(rng()-0.5)*0.3,
+        rotation:(rng()-0.5)*0.4
+      });
     });
   });
+
+  g.add(buildHouseInstances(housePlacements));
 
   return g;
 }

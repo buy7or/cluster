@@ -1,5 +1,10 @@
 // distinguir click de arrastre
 let downX=0, downY=0, moved=false;
+function pickFromHit(hit){
+  const data=hit.object.userData;
+  if(hit.instanceId!==undefined && data.instancePicks) return data.instancePicks[hit.instanceId]||null;
+  return data.pick||null;
+}
 renderer.domElement.addEventListener('pointerdown', e=>{ downX=e.clientX; downY=e.clientY; moved=false; });
 renderer.domElement.addEventListener('pointermove', e=>{ if(Math.hypot(e.clientX-downX, e.clientY-downY)>5) moved=true; });
 renderer.domElement.addEventListener('pointerup', e=>{
@@ -9,7 +14,8 @@ renderer.domElement.addEventListener('pointerup', e=>{
   raycaster.setFromCamera(mouse, camera);
   const hits = raycaster.intersectObjects(pickableObjects, false);
   for(const h of hits){
-    if(h.object.userData && h.object.userData.pick){ showScroll(h.object.userData.pick); return; }
+    const pick=pickFromHit(h);
+    if(pick){ showScroll(pick); return; }
   }
   hideScroll();
 });
@@ -22,14 +28,19 @@ renderer.domElement.addEventListener('dblclick', e=>{
   const hits = raycaster.intersectObjects(pickableObjects, false);
   let focus = null, desiredDist = camDist;
   for(const h of hits){
-    if(h.object.userData && h.object.userData.pick){
-      const pick = h.object.userData.pick;
+    const pick=pickFromHit(h);
+    if(pick){
       // centro del elemento y distancia deseada segun tipo
       focus = h.point.clone();
       if(pick.type === "pod"){
-        // centro real de la casita (grupo padre con userData.pod)
-        let p=h.object; while(p.parent && !(p.userData && p.userData.pod)) p=p.parent;
-        const c=new THREE.Vector3(); new THREE.Box3().setFromObject(p).getCenter(c); focus.copy(c);
+        if(pick.focus){
+          focus.set(pick.focus.x,pick.focus.y,pick.focus.z);
+          h.object.localToWorld(focus);
+        }
+        else {
+          let p=h.object; while(p.parent && !(p.userData && p.userData.pod)) p=p.parent;
+          const c=new THREE.Vector3(); new THREE.Box3().setFromObject(p).getCenter(c); focus.copy(c);
+        }
         desiredDist = 16;
       } else if(pick.type === "namespace"){
         desiredDist = 30;
