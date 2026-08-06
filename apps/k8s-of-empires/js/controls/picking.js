@@ -7,7 +7,7 @@ renderer.domElement.addEventListener('pointerup', e=>{
   mouse.x = (e.clientX/innerWidth)*2 - 1;
   mouse.y = -(e.clientY/innerHeight)*2 + 1;
   raycaster.setFromCamera(mouse, camera);
-  const hits = raycaster.intersectObjects(scene.children, true);
+  const hits = raycaster.intersectObjects(pickableObjects, false);
   for(const h of hits){
     if(h.object.userData && h.object.userData.pick){ showScroll(h.object.userData.pick); return; }
   }
@@ -19,7 +19,7 @@ renderer.domElement.addEventListener('dblclick', e=>{
   mouse.x = (e.clientX/innerWidth)*2 - 1;
   mouse.y = -(e.clientY/innerHeight)*2 + 1;
   raycaster.setFromCamera(mouse, camera);
-  const hits = raycaster.intersectObjects(scene.children, true);
+  const hits = raycaster.intersectObjects(pickableObjects, false);
   let focus = null, desiredDist = camDist;
   for(const h of hits){
     if(h.object.userData && h.object.userData.pick){

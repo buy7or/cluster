@@ -1,9 +1,39 @@
 // ---------- helpers ----------
 const boxGeo = new THREE.BoxGeometry(1,1,1);
-function mat(color, opts={}){ const {rough,...rest}=opts; return new THREE.MeshStandardMaterial({ color, roughness: rough??0.9, metalness:0, ...rest }); }
+boxGeo.userData.shared = true;
+const instanceTransform = new THREE.Object3D();
+
+function makeBoxInstances(material, items){
+  const mesh = new THREE.InstancedMesh(boxGeo, material, items.length);
+  items.forEach((item, index)=>{
+    instanceTransform.position.set(item.x, item.y, item.z);
+    instanceTransform.scale.set(item.sx, item.sy, item.sz);
+    instanceTransform.rotation.set(0, 0, 0);
+    instanceTransform.updateMatrix();
+    mesh.setMatrixAt(index, instanceTransform.matrix);
+  });
+  mesh.instanceMatrix.setUsage(THREE.StaticDrawUsage);
+  return mesh;
+}
+
+const materialCache = new Map();
+function mat(color, opts={}){
+  const {rough,...rest}=opts;
+  const key = JSON.stringify({ color, roughness: rough??0.9, metalness:0, ...rest });
+  if(!materialCache.has(key)){
+    const material = new THREE.MeshStandardMaterial({ color, roughness: rough??0.9, metalness:0, ...rest });
+    material.userData.shared = true;
+    materialCache.set(key, material);
+  }
+  return materialCache.get(key);
+}
 const ROOF_PALETTE = [0xc1503a, 0xb0553c, 0xa0522d, 0x8b6f47, 0x6d7a8c, 0x9c4a5a];
 
+const woodFloorMaterialCache = new Map();
 function makeWoodFloorMaterial(plotSize){
+  const repeat = Math.max(2, Math.round(plotSize/5));
+  if(woodFloorMaterialCache.has(repeat)) return woodFloorMaterialCache.get(repeat);
+
   const c=document.createElement('canvas'); c.width=c.height=256;
   const ctx=c.getContext('2d');
   ctx.fillStyle='#5f3b1f'; ctx.fillRect(0,0,256,256);
@@ -37,6 +67,12 @@ function makeWoodFloorMaterial(plotSize){
 
   const tex=new THREE.CanvasTexture(c);
   tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
-  tex.repeat.set(Math.max(2, plotSize/5), Math.max(2, plotSize/5));
-  return new THREE.MeshStandardMaterial({ color:0x6b4423, map:tex, roughness:0.92, metalness:0 });
+  tex.repeat.set(repeat, repeat);
+  tex.userData = tex.userData || {};
+  tex.userData.shared = true;
+
+  const material = new THREE.MeshStandardMaterial({ color:0x6b4423, map:tex, roughness:0.92, metalness:0 });
+  material.userData.shared = true;
+  woodFloorMaterialCache.set(repeat, material);
+  return material;
 }

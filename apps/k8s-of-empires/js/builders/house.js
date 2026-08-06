@@ -15,12 +15,12 @@ function buildHouse(pod){
   const wallMat=mat(wallColor), roofMat=mat(roofColor,{rough:0.8}), woodMat=mat(0x7a5230);
 
   const body=new THREE.Mesh(boxGeo, wallMat);
-  body.scale.set(w,totalH,d); body.position.y=totalH/2; body.castShadow=true; body.receiveShadow=true; g.add(body);
+  body.scale.set(w,totalH,d); body.position.y=totalH/2; body.castShadow=true; g.add(body);
 
-  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sz])=>{
-    const beam=new THREE.Mesh(boxGeo, woodMat); beam.scale.set(0.12,totalH,0.12);
-    beam.position.set(sx*w/2,totalH/2,sz*d/2); beam.castShadow=true; g.add(beam);
-  });
+  const beams=makeBoxInstances(woodMat, [[-1,-1],[1,-1],[-1,1],[1,1]].map(([sx,sz])=>({
+    x:sx*w/2, y:totalH/2, z:sz*d/2, sx:0.12, sy:totalH, sz:0.12
+  })));
+  g.add(beams);
 
   const roofH=0.7+rng()*0.5;
   let roofApexY;
@@ -36,7 +36,7 @@ function buildHouse(pod){
 
   if(hasChimney){
     const chim=new THREE.Mesh(boxGeo, mat(0x8a5a2a)); chim.scale.set(0.3,0.8,0.3);
-    chim.position.set(w*0.25*(rng()<0.5?-1:1), totalH+roofH*0.5, d*0.2); chim.castShadow=true; g.add(chim);
+    chim.position.set(w*0.25*(rng()<0.5?-1:1), totalH+roofH*0.5, d*0.2); g.add(chim);
   }
 
   const door=new THREE.Mesh(boxGeo, woodMat); door.scale.set(0.4,0.7,0.06); door.position.set(0,0.35,d/2+0.01); g.add(door);
@@ -57,6 +57,7 @@ function buildHouse(pod){
   nameTag.userData.isPodLabel = true;
   g.add(nameTag);
   g.userData.nameTag = nameTag;
+  podLabels.push(nameTag);
   // marcar todo el grupo como clicable -> pod
   g.traverse(o=>{ if(o.isMesh) o.userData.pick = { type:"pod", pod }; });
   return g;

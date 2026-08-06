@@ -19,11 +19,11 @@ function makeSign(text, color){
   // poste vertical a la izquierda de la placa
   const postX = -1.5;
   const post=new THREE.Mesh(boxGeo, woodMat);
-  post.scale.set(0.18, 3.2, 0.18); post.position.set(postX, 1.6, 0); post.castShadow=true; grp.add(post);
+  post.scale.set(0.18, 3.2, 0.18); post.position.set(postX, 1.6, 0); grp.add(post);
   // remate del poste
   const cap=new THREE.Mesh(boxGeo, woodMat); cap.scale.set(0.3,0.2,0.3); cap.position.set(postX, 3.3, 0); grp.add(cap);
   // brazo horizontal del que cuelga la placa
-  const arm=new THREE.Mesh(boxGeo, woodMat); arm.scale.set(2.1,0.16,0.16); arm.position.set(postX+1.05, 3.0, 0); arm.castShadow=true; grp.add(arm);
+  const arm=new THREE.Mesh(boxGeo, woodMat); arm.scale.set(2.1,0.16,0.16); arm.position.set(postX+1.05, 3.0, 0); grp.add(arm);
   // cadenitas/soportes
   [postX+0.55, postX+1.95].forEach(x=>{ const link=new THREE.Mesh(boxGeo, woodMat); link.scale.set(0.05,0.35,0.05); link.position.set(x, 2.75, 0); grp.add(link); });
 

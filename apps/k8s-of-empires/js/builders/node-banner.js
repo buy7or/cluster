@@ -5,14 +5,14 @@ function makeNodeBanner(node){
   const stoneDark=mat(0x9a9184,{rough:1});
 
   // base de piedra escalonada
-  const base=new THREE.Mesh(boxGeo, stoneDark); base.scale.set(2.0,0.4,1.0); base.position.y=0.2; base.castShadow=true; base.receiveShadow=true; grp.add(base);
-  const base2=new THREE.Mesh(boxGeo, stoneMat); base2.scale.set(1.6,0.35,0.8); base2.position.y=0.55; base2.castShadow=true; grp.add(base2);
+  const base=new THREE.Mesh(boxGeo, stoneDark); base.scale.set(2.0,0.4,1.0); base.position.y=0.2; base.receiveShadow=true; grp.add(base);
+  const base2=new THREE.Mesh(boxGeo, stoneMat); base2.scale.set(1.6,0.35,0.8); base2.position.y=0.55; grp.add(base2);
 
   // losa vertical tallada (menhir)
   const slab=new THREE.Mesh(boxGeo, stoneMat); slab.scale.set(1.5,2.6,0.42); slab.position.y=2.0; slab.castShadow=true; slab.receiveShadow=true; grp.add(slab);
   // remate superior redondeado
   const capTop=new THREE.Mesh(new THREE.CylinderGeometry(0.75,0.75,0.42,16,1,false,0,Math.PI), stoneMat);
-  capTop.rotation.z=-Math.PI/2; capTop.rotation.y=Math.PI/2; capTop.position.set(0,3.3,0); capTop.castShadow=true; grp.add(capTop);
+  capTop.rotation.z=-Math.PI/2; capTop.rotation.y=Math.PI/2; capTop.position.set(0,3.3,0); grp.add(capTop);
 
   // placa tallada (texto grabado en la piedra)
   const c=document.createElement('canvas'); c.width=256; c.height=320; const ctx=c.getContext('2d');

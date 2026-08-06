@@ -1,5 +1,5 @@
 // ---------- namespace: agrupar pods ----------
-function groupByNamespace(pods){
+function groupByNamespace(pods=[]){
   const map = new Map();
   pods.forEach(p=>{ if(!map.has(p.ns)) map.set(p.ns, []); map.get(p.ns).push(p); });
   return [...map.entries()]; // [ [ns, pods[]], ... ]

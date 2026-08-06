@@ -30,7 +30,7 @@
   button.alt2 { background: #f4978e; }
   .legend {
     position: absolute; left: 20px; bottom: 20px;
-    background: rgba(255,255,255,0.85); backdrop-filter: blur(6px);
+    background: rgba(255,255,255,0.94);
     border: 2px solid #2f3b2a; border-radius: 14px; padding: 10px 12px;
     font-size: 12px; font-weight: 500; color: #2f3b2a; display: grid; gap: 5px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.2);

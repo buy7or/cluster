@@ -77,13 +77,12 @@ function updateGround(){
   decorateIsland(cx, w, d, maxPlot);
 }
 
-// decoracion de la isla: camino de tierra entre portones + vegetacion de borde
+// caminos de tierra entre los portones
 const islandDeco = new THREE.Group();
 scene.add(islandDeco);
 
 function decorateIsland(cx, w, d, maxPlot){
   while(islandDeco.children.length) islandDeco.remove(islandDeco.children[0]);
-  const dr = makeRng(1337);
   const roadZ = maxPlot/2 + 4.2;      // delante de los portones
   const y = -0.96;
 
@@ -102,48 +101,4 @@ function decorateIsland(cx, w, d, maxPlot){
     spur.position.set(g.position.x, y, half + len/2);
     spur.receiveShadow=true; islandDeco.add(spur);
   });
-
-  // vegetacion ordenada por el borde de la isla
-  function tree(x,z,s){
-    const t=new THREE.Group();
-    const trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.22,1.0,6), mat(0x6b4a24));
-    trunk.position.y=0.5; trunk.castShadow=true; t.add(trunk);
-    const g1=new THREE.Mesh(new THREE.ConeGeometry(1.0,1.8,8), mat(0x3f8a2c));
-    g1.position.y=1.7; g1.castShadow=true; t.add(g1);
-    const g2=new THREE.Mesh(new THREE.ConeGeometry(0.75,1.3,8), mat(0x4b9c36));
-    g2.position.y=2.5; g2.castShadow=true; t.add(g2);
-    t.position.set(x,-0.98,z); t.scale.setScalar(s);
-    islandDeco.add(t);
-  }
-  function bush(x,z,s){
-    const b=new THREE.Mesh(new THREE.IcosahedronGeometry(0.55,0), mat(0x4b9c36));
-    b.position.set(x,-0.7,z); b.scale.set(s,s*0.8,s); b.rotation.y=dr()*3; b.castShadow=true;
-    islandDeco.add(b);
-  }
-  function rock(x,z,s){
-    const r=new THREE.Mesh(new THREE.DodecahedronGeometry(0.42,0), mat(0x96907f));
-    r.position.set(x,-0.78,z); r.scale.set(s,s*0.7,s); r.rotation.set(dr(),dr(),dr()); r.castShadow=true;
-    islandDeco.add(r);
-  }
-
-  const hw=w/2-2.4, hd=d/2-2.4;
-  const stepX = 5.5;
-  for(let x=-hw; x<=hw; x+=stepX){
-    const jx=(dr()-0.5)*1.2;
-    // borde norte
-    const zN=-hd+(dr()-0.5)*1.0;
-    if(dr()<0.62) tree(cx+x+jx, zN, 0.85+dr()*0.5); else bush(cx+x+jx, zN, 0.9+dr()*0.6);
-    // borde sur (mas alla del camino)
-    const zS=hd+(dr()-0.5)*1.0;
-    if(zS > roadZ+1.6){
-      if(dr()<0.55) tree(cx+x+jx, zS, 0.85+dr()*0.5); else rock(cx+x+jx, zS, 0.8+dr()*0.7);
-    }
-  }
-  const stepZ = 5.0;
-  for(let z=-hd+stepZ; z<hd-stepZ*0.5; z+=stepZ){
-    if(Math.abs(z-roadZ)<2.6) continue;
-    const jz=(dr()-0.5)*1.0;
-    if(dr()<0.6) tree(cx-hw+(dr()-0.5)*0.9, z+jz, 0.85+dr()*0.5); else bush(cx-hw, z+jz, 0.9+dr()*0.5);
-    if(dr()<0.6) tree(cx+hw+(dr()-0.5)*0.9, z+jz, 0.85+dr()*0.5); else rock(cx+hw, z+jz, 0.8+dr()*0.6);
-  }
 }

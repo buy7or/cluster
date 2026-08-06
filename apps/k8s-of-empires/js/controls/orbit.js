@@ -58,30 +58,41 @@ addEventListener('keydown', e=>{
   if(PAN_KEYS.includes(e.key)){ keys[e.key.toLowerCase()]=true; tweening=false; e.preventDefault(); }
 });
 addEventListener('keyup', e=>{ if(PAN_KEYS.includes(e.key)) keys[e.key.toLowerCase()]=false; });
+addEventListener('blur', ()=>{
+  Object.keys(keys).forEach(key=>{ keys[key]=false; });
+  panVel.set(0,0,0);
+});
 
 const panVel = new THREE.Vector3();  // velocidad actual (con inercia)
-function updatePan(){
+const panForward = new THREE.Vector3();
+const panRight = new THREE.Vector3();
+const panDirection = new THREE.Vector3();
+const panTargetVelocity = new THREE.Vector3();
+function updatePan(dt){
   const up = keys['arrowup']||keys['w'];
   const down = keys['arrowdown']||keys['s'];
   const left = keys['arrowleft']||keys['a'];
   const right = keys['arrowright']||keys['d'];
 
   // direcciones en el plano del suelo segun el yaw
-  const fwd = new THREE.Vector3(-Math.sin(camYaw), 0, -Math.cos(camYaw));
-  const rightV = new THREE.Vector3(Math.cos(camYaw), 0, -Math.sin(camYaw));
+  panForward.set(-Math.sin(camYaw), 0, -Math.cos(camYaw));
+  panRight.set(Math.cos(camYaw), 0, -Math.sin(camYaw));
 
   // direccion objetivo segun teclas
-  const dir = new THREE.Vector3();
-  if(up) dir.add(fwd);
-  if(down) dir.sub(fwd);
-  if(right) dir.add(rightV);
-  if(left) dir.sub(rightV);
+  panDirection.set(0, 0, 0);
+  if(up) panDirection.add(panForward);
+  if(down) panDirection.sub(panForward);
+  if(right) panDirection.add(panRight);
+  if(left) panDirection.sub(panRight);
 
-  const maxSpeed = camDist * 0.005;          // velocidad tope, escalada al zoom
-  const target = dir.lengthSq()>0 ? dir.normalize().multiplyScalar(maxSpeed) : new THREE.Vector3();
+  const maxSpeed = camDist * 0.3;            // unidades/segundo, escalada al zoom
+  const isMoving = panDirection.lengthSq() > 0;
+  panTargetVelocity.set(0, 0, 0);
+  if(isMoving) panTargetVelocity.copy(panDirection).normalize().multiplyScalar(maxSpeed);
 
-  // interpolar la velocidad hacia el objetivo -> aceleracion suave y frenado con inercia
-  const ease = dir.lengthSq()>0 ? 0.12 : 0.08;
-  panVel.lerp(target, ease);
-  if(panVel.lengthSq() > 1e-6) camTarget.add(panVel);
+  // respuesta rapida al pulsar y frenado corto al soltar
+  const response = isMoving ? 24 : 18;
+  const ease = 1-Math.exp(-response*dt);
+  panVel.lerp(panTargetVelocity, ease);
+  if(panVel.lengthSq() > 1e-6) camTarget.addScaledVector(panVel, dt);
 }
